@@ -18,7 +18,7 @@
   * Base64
   * Hex
   * URL Encoding
-  * ROT13
+  * ROT1-25
 
 ---
 
