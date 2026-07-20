@@ -23,58 +23,102 @@ regex = re.compile(
 
 
 # =========================
-# Decoders
+# Decoder Functions
 # =========================
 
 def decode_base64(data):
     try:
-        return base64.b64decode(data).decode()
+        return [("Base64", base64.b64decode(data).decode())]
     except:
-        return None
+        return []
 
 
 def decode_hex(data):
     try:
-        return bytes.fromhex(data).decode()
+        return [("Hex", bytes.fromhex(data).decode())]
     except:
-        return None
+        return []
 
 
 def decode_url(data):
     try:
-        return urllib.parse.unquote(data)
+        result = urllib.parse.unquote(data)
+
+        if result != data:
+            return [("URL", result)]
+
     except:
-        return None
+        pass
+
+    return []
 
 
 def decode_rot13(data):
     try:
-        return codecs.decode(data, "rot13")
+        return [
+            ("ROT13", codecs.decode(data, "rot13"))
+        ]
     except:
-        return None
+        return []
 
 
+def decode_caesar(data):
 
-decoders = {
-    "Base64": decode_base64,
-    "Hex": decode_hex,
-    "URL": decode_url,
-    "ROT13": decode_rot13
-}
+    results = []
+
+    for shift in range(1, 26):
+
+        output = ""
+
+        for char in data:
+
+            if char.isalpha():
+
+                start = ord('A') if char.isupper() else ord('a')
+
+                output += chr(
+                    (ord(char) - start + shift) % 26 + start
+                )
+
+            else:
+                output += char
+
+
+        results.append(
+            (f"Caesar-{shift}", output)
+        )
+
+
+    return results
 
 
 
 # =========================
-# BFS Decoder Engine
+# Decoder List
+# =========================
+
+decoders = [
+    decode_base64,
+    decode_hex,
+    decode_url,
+    decode_rot13,
+    decode_caesar
+]
+
+
+# =========================
+# BFS Engine
 # =========================
 
 def auto_decode(start_text, max_depth=8):
 
     queue = deque()
 
-    # text , decode path
     queue.append(
-        (start_text, [])
+        (
+            start_text,
+            []
+        )
     )
 
 
@@ -86,12 +130,12 @@ def auto_decode(start_text, max_depth=8):
         text, path = queue.popleft()
 
 
-        # depth limit
+        # محدود کردن عمق
         if len(path) >= max_depth:
             continue
 
 
-        # جلوگیری از تکرار
+        # جلوگیری از حلقه
         if text in visited:
             continue
 
@@ -99,8 +143,9 @@ def auto_decode(start_text, max_depth=8):
 
 
 
-        # چک فلگ
+        # بررسی فلگ
         match = regex.search(text)
+
 
         if match:
 
@@ -112,28 +157,33 @@ def auto_decode(start_text, max_depth=8):
             for step in path:
                 print(" ↓", step)
 
+
             print("\nFlag:")
             print(match.group())
 
-            return match.group()
+            return
 
 
 
-        # تست Decoderها
-        for name, decoder in decoders.items():
+        # اجرای Decoderها
 
-            output = decoder(text)
+        for decoder in decoders:
 
-
-            if output and output != text:
+            outputs = decoder(text)
 
 
-                queue.append(
-                    (
-                        output,
-                        path + [name]
+            for name, result in outputs:
+
+
+                if result and result != text:
+
+                    queue.append(
+                        (
+                            result,
+                            path + [name]
+                        )
                     )
-                )
+
 
 
     print("\nFlag not found")
