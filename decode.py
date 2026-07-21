@@ -120,7 +120,7 @@ def auto_decode(start_text, max_depth=8):
 
 
 
-        # چک فلگ
+        # Flag check
         match = regex.search(text)
 
         if match:
@@ -140,8 +140,6 @@ def auto_decode(start_text, max_depth=8):
 
 
 
-        # تست Decoderها
-        # تست Decoderها
         for decoder in decoders:
 
             outputs = decoder(text)
