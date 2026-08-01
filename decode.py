@@ -15,7 +15,7 @@ print(flag_prefix)
 
 encoded_text = input("Encoded text: ").strip()
 
-#______________________________
+#_____________________________
 # Flag Regex
 #______________________________
 
