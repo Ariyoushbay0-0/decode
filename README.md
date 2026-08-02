@@ -195,8 +195,3 @@ Flag:
 > ✅ Entropy Based Scoring و چند‌Candidate بودن Flag Detection در این نسخه پیاده‌سازی شدند.
 
 ---
-
-# ⚠️ Note
-
-این ابزار برای اهداف آموزشی، CTF و تحلیل داده‌های رمزگذاری‌شده طراحی شده است.
-در چالش‌های CTF، سرعت و دقت ابزار به نوع Encoding، عمق Decode و محدودیت منابع (`max_depth`, `beam_width`, `max_total_nodes` در `main.py`) بستگی دارد.
