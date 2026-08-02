@@ -1,5 +1,12 @@
 """
 main.py
+-------
+نقطه‌ی ورود پروژه. هدف: پیدا کردن *همه‌ی* Flagهای ممکن، در سریع‌ترین
+حالت ممکن (verbose خاموش، dedup روی متن، gate کردن Caesar/ROT13 روی
+گارباژ، توقف زودهنگام از یک گره‌ی از قبل حل‌شده - همه در search_engine.py).
+
+از این نسخه به بعد، تنظیمات جستجو (beam_width و بقیه) به‌جای هاردکد شدن،
+از search_profiles.py می‌آیند - کاربر بین Fast و Thorough انتخاب می‌کند.
 """
 
 import re
@@ -8,10 +15,11 @@ import time
 from decoders import decoders
 from flag_validator import FlagValidator
 from search_engine import BeamAStarSearch
+from search_profiles import get_profile, resolve_profile_name, DEFAULT_PROFILE
 
 
-def print_results(results, elapsed, nodes_explored):
-    print(f"\n(زمان اجرا: {elapsed:.3f}s | گره‌های بررسی‌شده: {nodes_explored})")
+def print_results(results, elapsed, nodes_explored, profile_name):
+    print(f"\n(Mode: {profile_name} | زمان اجرا: {elapsed:.3f}s | گره‌های بررسی‌شده: {nodes_explored})")
 
     if not results:
         print("\nFlag not found")
@@ -35,26 +43,28 @@ def main():
 
     encoded_text = input("Encoded text: ").strip()
 
+    mode_input = input(f"Mode (fast/thorough) [{DEFAULT_PROFILE}]: ").strip()
+    profile_name = mode_input if mode_input else DEFAULT_PROFILE
+    profile = get_profile(profile_name)
+    display_name = resolve_profile_name(profile_name)
+
     validator = FlagValidator(flag_prefix)
 
     engine = BeamAStarSearch(
         decoders=decoders,
         flag_validator=validator,
-        beam_width=40,          
-        max_depth=20,           
-        max_total_nodes=2000
-        adaptive_growth=25,     
-        max_beam_width=400,
-        verbose=False,          
+        verbose=False,  # خاموش برای سرعت؛ برای دیباگ True کن
+        **profile,       # beam_width / max_depth / max_total_nodes / adaptive_growth / max_beam_width
     )
 
     start = time.perf_counter()
-    results = engine.run(encoded_text)  
+    results = engine.run(encoded_text)  # همه‌ی Flagهای یافت‌شده (top_n=None داخل validator هم قابل استفاده است)
     elapsed = time.perf_counter() - start
 
+    # اگر خواستی واقعا *همه*‌ی Candidateها (نه فقط ۵ تای برتر) را ببینی:
     all_results = validator.best_candidates(top_n=None)
 
-    print_results(all_results, elapsed, engine.explored_nodes)
+    print_results(all_results, elapsed, engine.explored_nodes, display_name)
 
 
 if __name__ == "__main__":
