@@ -1,9 +1,5 @@
 """
 flag_validator.py
-------------------
-Flag Detection قوی‌تر (بند ۴).
-به‌جای برگرداندن اولین Flag، تمام Candidateهای ممکن در طول جستجو جمع‌آوری
-می‌شوند، هرکدام امتیاز می‌گیرند و در پایان بهترین‌ها نمایش داده می‌شوند.
 """
 
 import re
@@ -13,8 +9,8 @@ from scoring import score_text
 def build_specific_regex(flag_prefix: str):
     if flag_prefix:
         return re.compile(rf"{re.escape(flag_prefix)}\{{.*?\}}")
-    # اگر prefix خالی بود، فقط الگوی عمومی استفاده می‌شود
-    return re.compile(r"(?!x)x")  # regex که هرگز match نمی‌کند
+
+    return re.compile(r"(?!x)x")  
 
 
 # الگوی عمومی PREFIX{...} برای موقعی که کاربر format دقیق را نمی‌داند
@@ -28,7 +24,7 @@ class FlagValidator:
         self.generic_regex = GENERIC_FLAG_REGEX
 
         self.seen = set()
-        self.candidates = []  # هر آیتم: {"flag", "path", "score"}
+        self.candidates = []  
 
     def _extract(self, text: str):
         found = set()
@@ -53,7 +49,7 @@ class FlagValidator:
             found_new = True
 
             base_score = score_text(text)
-            # اگر با prefix دقیق مچ شده باشد امتیاز بیشتری می‌گیرد
+        
             exact_bonus = 400 if self.specific_regex.match(flag) or self.specific_regex.search(flag) else 150
 
             self.candidates.append({

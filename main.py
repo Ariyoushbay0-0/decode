@@ -1,9 +1,5 @@
 """
 main.py
--------
-نقطه‌ی ورود پروژه. هدف: پیدا کردن *همه‌ی* Flagهای ممکن، در سریع‌ترین
-حالت ممکن (verbose خاموش، dedup روی متن، gate کردن Caesar/ROT13 روی
-گارباژ، توقف زودهنگام از یک گره‌ی از قبل حل‌شده - همه در search_engine.py).
 """
 
 import re
@@ -44,19 +40,18 @@ def main():
     engine = BeamAStarSearch(
         decoders=decoders,
         flag_validator=validator,
-        beam_width=40,          # چند مسیر برتر در هر عمق نگه داشته شود
-        max_depth=20,           # حداکثر عمق Decode
-        max_total_nodes=20000,  # سقف کلی گره‌ها برای جلوگیری از انفجار
-        adaptive_growth=25,     # اگر عمقی نتیجه‌ای نداد، beam چقدر بزرگ شود
+        beam_width=40,          
+        max_depth=20,           
+        max_total_nodes=2000
+        adaptive_growth=25,     
         max_beam_width=400,
-        verbose=False,          # خاموش برای سرعت؛ برای دیباگ True کن
+        verbose=False,          
     )
 
     start = time.perf_counter()
-    results = engine.run(encoded_text)  # همه‌ی Flagهای یافت‌شده (top_n=None داخل validator هم قابل استفاده است)
+    results = engine.run(encoded_text)  
     elapsed = time.perf_counter() - start
 
-    # اگر خواستی واقعا *همه*‌ی Candidateها (نه فقط ۵ تای برتر) را ببینی:
     all_results = validator.best_candidates(top_n=None)
 
     print_results(all_results, elapsed, engine.explored_nodes)

@@ -1,10 +1,5 @@
 """
 decoder_weights.py
--------------------
-Decoder Weight System (بند ۳).
-هر Decoder یک "هزینه" دارد؛ Decoderهای رایج و قطعی (Base64، Hex ...) ارزان‌ترند
-و Decoderهای احتمالی/گسترده (Caesar، ROT13، Reverse) گران‌ترند تا در Search
-(A* / Beam Search) مسیرهای منطقی زودتر بررسی شوند.
 """
 
 DEFAULT_COST = 6
@@ -33,7 +28,7 @@ decoder_cost = {
     "ROT13": 4,
 }
 
-# Caesar ROT1..ROT25 (ROT13 override می‌شود چون در دیکشنری بالا صریح تعریف شده)
+
 for shift in range(1, 26):
     key = f"ROT{shift}"
     decoder_cost.setdefault(key, 5)

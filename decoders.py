@@ -1,8 +1,5 @@
 """
 decoders.py
-------------
-تمام Decoderها دقیقاً همان منطق نسخه‌ی قبلی را دارند (چیزی حذف نشده).
-این فایل فقط Decoderها را جدا نگه می‌دارد تا ماژولار بمانند.
 """
 
 import re
@@ -155,7 +152,6 @@ def decode_caesar(data):
     return results
 
 
-# لیست Decoderها - دقیقا همان‌هایی که در نسخه‌ی قبلی بودند
 decoders = [
     decode_base64,
     decode_base32,
