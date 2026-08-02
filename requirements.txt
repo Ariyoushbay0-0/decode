@@ -1,0 +1,12 @@
+# Auto Flag Decoder
+#
+# این پروژه فقط از کتابخانه‌ی استاندارد پایتون استفاده می‌کند
+# (base64, codecs, urllib.parse, quopri, html, re, heapq, math, string, time).
+# در نتیجه فعلاً هیچ پکیج خارجی‌ای لازم نیست و این فایل خالی است.
+#
+# نیازمندی: Python >= 3.8
+#
+# اگر در آینده ویژگی‌های زیر اضافه شوند، این فایل به‌روزرسانی خواهد شد:
+#   - Gzip / Zlib Detection      -> stdlib (gzip, zlib) - بدون نیاز به پکیج جدید
+#   - Archive Analysis (7z)      -> py7zr
+#   - Image Steganography        -> Pillow, stegano
